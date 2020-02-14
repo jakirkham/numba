@@ -54,6 +54,20 @@ def from_cuda_array_interface(desc, owner=None):
     return da
 
 
+def as_cuda_pointer(obj):
+    """Create a DeviceNDArray from any object that implements
+    the :ref:`cuda array interface <cuda-array-interface>`.
+
+    A view of the underlying GPU buffer is created.  No copying of the data
+    is done.  The resulting DeviceNDArray will acquire a reference from `obj`.
+    """
+    if not is_cuda_array(obj):
+        raise TypeError("*obj* doesn't implement the cuda array interface.")
+    else:
+        return from_cuda_array_interface(obj.__cuda_array_interface__,
+                                         owner=obj)
+
+
 def as_cuda_array(obj):
     """Create a DeviceNDArray from any object that implements
     the :ref:`cuda array interface <cuda-array-interface>`.
